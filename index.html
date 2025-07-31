@@ -18,7 +18,6 @@
       --sidebar-active: var(--accent);
       --title-font: 'Inter', system-ui, sans-serif;
       --body-font: 'Inter', system-ui, sans-serif;
-      --sidebar-width: max(20vw, 180px);
     }
 
     * {
@@ -34,55 +33,75 @@
       scroll-behavior: smooth;
       font-size: 1.08rem;
       line-height: 1.6;
-      background: linear-gradient(135deg, #ffffff 0%, #d4735b 100%);
+      background: #ffe1ef;
       overflow-x: hidden; /* Prevent horizontal scroll */
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('./data/strawberry-icon.png') repeat;
+      background-size: 120px 120px;
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: -1;
     }
 
     .sidebar {
-      width: var(--sidebar-width);
       position: fixed;
-      height: 100vh;
-      overflow-y: auto;
-      background: #fff;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: #878787;
       border: none;
-      padding: 2rem 1rem;
-      text-align: right;
-      background: linear-gradient(135deg, #ffffff 0%, #79e07f 100%);
-    }
-
-    .sidebar h2 {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-      color: var(--text);
+      padding: 0 2rem;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
     .sidebar ul {
       list-style: none;
       padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
     }
 
     .sidebar ul li {
-      margin-bottom: 0.75rem;
+      margin: 0;
     }
 
     .sidebar a {
       text-decoration: none;
-      color: var(--sidebar-text);
+      color: white;
       font-weight: 500;
-      transition: color 0.25s, font-weight 0.25s, text-shadow 0.25s;
+      font-size: 0.95rem;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      transition: all 0.25s ease;
     }
 
     .sidebar a.active,
     .sidebar a:hover {
-      color: var(--sidebar-active);
-      font-weight: 700;
-      text-shadow: 0 2px 8px rgba(52, 120, 246, 0.10), 0 1px 0 #fff;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-weight: 600;
       text-decoration: none;
     }
 
     main {
-      margin-left: var(--sidebar-width);
-      width: calc(100% - var(--sidebar-width));
+      margin-top: 60px;
+      width: 100%;
       max-width: none;
       padding: 0;
       box-sizing: border-box;
@@ -210,9 +229,9 @@
 
     .main-content {
       width: 100%;
-      max-width: 1000px;
-      margin: 0 3rem;
-      padding: 0 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
       overflow: visible;
     }
 
@@ -223,15 +242,23 @@
       }
 
       .sidebar {
-        display: none;
+        height: 50px;
+        padding: 0 1rem;
       }
-
-      :root {
-        --sidebar-width: 0;
+      
+      .sidebar ul {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .sidebar a {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
       }
 
       main {
-        margin-left: 0;
+        margin-top: 50px;
         width: 100%;
         padding: 0;
       }
@@ -345,81 +372,27 @@
       window.addEventListener('scroll', updateActiveLink);
       updateActiveLink();
 
-      // Image cycling and video swap logic
-      const cyclingImage = document.getElementById('cycling-image');
+      // Video selection logic
       const mainVideo = document.getElementById('main-video');
       const thumbnailVideos = document.querySelectorAll('#iframe-thumbnails video');
 
-      // Image cycling setup
-      const images = ['data/demo_vids/IMG_4587.jpg', 'data/demo_vids/IMG_4588.jpg', 'data/demo_vids/IMG_4589.jpg','data/demo_vids/IMG_4590.jpg'];
-      let currentImageIndex = 0;
-      let imageCyclingInterval;
-
-      function startImageCycling() {
-        // Show image, hide video
-        cyclingImage.style.display = 'block';
-        mainVideo.style.display = 'none';
-        mainVideo.pause();
-        
-        // Start cycling
-        imageCyclingInterval = setInterval(() => {
-          currentImageIndex = (currentImageIndex + 1) % images.length;
-          cyclingImage.src = images[currentImageIndex];
-        }, 500); // 0.5 second duration
-      }
-
-      function stopImageCycling() {
-        if (imageCyclingInterval) {
-          clearInterval(imageCyclingInterval);
-          imageCyclingInterval = null;
-        }
-      }
-
-      // Start image cycling by default
-      startImageCycling();
-
-      // Video selection logic
       if (thumbnailVideos.length > 0) {
+        // Highlight the first video by default (blackberry)
+        thumbnailVideos[0].style.outline = '3px solid var(--accent)';
+        
         thumbnailVideos.forEach((vid, idx) => {
           vid.addEventListener('click', () => {
-            // Stop image cycling
-            stopImageCycling();
-            
-            // Hide image, show video
-            cyclingImage.style.display = 'none';
-            mainVideo.style.display = 'block';
-            
             // Set video source to the clicked thumbnail's source
-            mainVideo.src = vid.src;
-            mainVideo.play();
-            
-            // Highlight selected video
-            thumbnailVideos.forEach(v => v.style.outline = '');
-            vid.style.outline = '3px solid var(--accent)';
-          });
-        });
-        
-        // Optional: Add a way to go back to image cycling
-        // You could add a button or click on the main display area
-        document.getElementById('main-display').addEventListener('dblclick', () => {
-          startImageCycling();
-          // Remove highlight from all videos
-          thumbnailVideos.forEach(v => v.style.outline = '');
-        });
-      }
-      const backButton = document.getElementById('back-to-images');
-      if (backButton) {
-        backButton.addEventListener('click', () => {
-          startImageCycling();
-          thumbnailVideos.forEach(v => v.style.outline = '');
-          backButton.style.display = 'none';
-        });
-        
-        // Modify the video click handler to show the button
-        thumbnailVideos.forEach((vid, idx) => {
-          vid.addEventListener('click', () => {
-            // ... existing code ...
-            backButton.style.display = 'block';
+            const src = vid.getAttribute('data-video');
+            if (src) {
+              mainVideo.querySelector('source').src = src;
+              mainVideo.load();
+              mainVideo.play();
+              
+              // Highlight selected video
+              thumbnailVideos.forEach(v => v.style.outline = '');
+              vid.style.outline = '3px solid var(--accent)';
+            }
           });
         });
       }
@@ -519,12 +492,12 @@
   <nav class="sidebar">
     <ul>
       <li><a href="#abstract">Abstract</a></li>
-      <li><a href="#realrollouts">Real World Tactile Demos</a></li>
+      <!-- <li><a href="#realrollouts">Real World Tactile Demos</a></li> -->
       <li><a href="#method-at-a-glance">Method at a Glance</a></li>
-      <li><a href="#data-collection">Data Collection</a></li>
-      <li><a href="#fe-simulation">FE Simulation Pipeline</a></li>
-      <li><a href="#tensor">Construction of Deformation and Stress Tensors</a></li>
-      <li><a href="#model">Model</a></li>
+      <li><a href="#tactile-policy">Tactile Diffusion Policy</a></li>
+      <li><a href="#FruitSplat">FruitSplat</a></li>
+      <!-- <li><a href="#tensor">Construction of Deformation and Stress Tensors</a></li> -->
+      <!-- <li><a href="#model">Tactile Model</a></li> -->
       <li><a href="#results">Results</a></li>
     </ul>
   </nav>
@@ -533,7 +506,9 @@
       <section id="title-block">
         <div style="margin-top: 20px;"></div>   
         <div class="main-title">
-          <img src="data/tensortouch_emoji_blue.png" alt="TensorTouch Icon" style="height: 1em; margin-left: 0.2em; vertical-align: middle;">
+          <img src="data/strawberry-icon.png" alt="Strawberry Icon" style="height: 1em; margin-left: 0.2em; vertical-align: middle;">
+          <img src="data/tomato-icon.png" alt="Tomato Icon" style="height: 1em; margin-left: 0.05em; vertical-align: middle;">
+          <img src="data/blackberry-icon.png" alt="Blackberry Icon" style="height: 1em; margin-left: 0.05em; vertical-align: middle;">
           <span>Dex</span><span class="gradient">Fruit</span></div>
         <div class="subtitle">Calibration of Tactile Sensors for High Resolution
           Stress Tensor and Deformation for Dexterous Manipulation</div>
@@ -557,41 +532,46 @@
           </video>
         </div>
         <div style="max-width: 900px; margin: 0 auto 1.5rem auto; font-size: 1.15rem; color: #222; text-align: center;">
-          <b>TensorTouch</b> is a calibration framework of optical tactile Sensors for estimating high resolution stress tensor and deformation for advanced dexterous manipulation.
+          <b>DexFruit</b> is an optical tactile sensing informed diffusion policy for fruit manipulation.
         </div>
         <div style="text-align: center; margin-bottom: 2.5rem;">
-          <a href="TensorTouch.pdf" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[Paper]</a>
-          <a href="https://arxiv.org/abs/2506.08291" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[arXiv]</a>
-          <a href="https://www.youtube.com/watch?v=3fOdT-n2R8U" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[YouTube Video]</a>          
-          <a href="https://github.com/armlabstanford/tensor-touch" style="color: #3478f6; text-decoration: none; font-weight: 600;">[Code]</a>          
+          <a href="#" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[Paper - Coming Soon]</a>
+          <a href="#" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[arXiv - Coming Soon]</a>
+          <a href="#" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[Demo Video]</a>          
+          <a href="#" style="color: #3478f6; text-decoration: none; font-weight: 600;">[Code - Coming Soon]</a>          
         </div>
       </section>
       <section id="abstract">
         <h1>Abstract</h1>
-          Advanced dexterous manipulation involving multiple simultaneous contacts across different surfaces, like 
-          pinching coins from ground or manipulating intertwined objects, remains challenging for robotic systems. Such 
-          tasks exceed the capabilities of vision and proprioception alone, requiring high-resolution tactile sensing with 
-          calibrated physical metrics. Raw optical tactile sensor images, while information-rich, lack interpretability 
-          and cross-sensor transferability, limiting their real-world utility. TensorTouch addresses this challenge 
-          by integrating finite element analysis with deep learning to extract comprehensive contact information from 
-          optical tactile sensors, including stress tensors, deformation fields, and force distributions at pixel-level 
-          resolution. The TensorTouch framework achieves sub-millimeter position accuracy and precise force estimation 
-          while supporting large sensor deformations crucial for manipulating soft objects. Experimental validation 
-          <b>demonstrates 90% success in selectively grasping one of two strings based on detected motion </b>, 
-          enabling new contact-rich manipulation capabilities previously inaccessible to robotic systems.</p>
-      </section>
-
-      <section id="realrollouts">
-        <h2>Real World Tactile Demos</h2>
-        <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 1rem;">
-          <video id="main-physical-video" autoplay muted loop playsinline controls
-            style="width: 100%; max-width: 900px; border-radius: 4px; border: 1px solid #ccc;">
-            <source src="data/real_vids/demo_video.mp4" type="video/mp4">
-          </video>
-        </div>
+        <p><b>DexFruit</b> is an optical tactile sensing informed diffusion policy for fruit manipulation. 
+          Many fruit are fragile and prone to bruising, thus requiring humans to manually harvest them with 
+          care. In this work we demonstrate by using expressive tactile sensing, automatic manipulation of 
+          fruit with minimal damage can be achieved. We show that our tactile informed diffusion policies 
+          outperforms baselines in both reduced bruising and pick-and-place success rate across three fruit: 
+          <b>strawberries, tomatoes, and blackberries</b>. In addition, we introduce <b>FruitSplat</b>, a novel 
+          technique to represent relevant agricultural information in high resolution 3D representation of 
+          <b>3D Gaussian Splatting (3DGS)</b>. Existing metrics for measuring damage lack quantitative rigor or 
+          require expensive equipment. With FruitSplat, we distill a 2D bruise detection segmentation model as 
+          well as 2D strawberry segmentation masking into the 3DGS representation. Furthermore, this representation 
+          is modular and general which we demonstrate by distilling mask information into the representation. 
+          Overall we demonstrate a <b>92% grasping policy success rate</b>, up to a <b>60% reduction in damage</b> 
+          and up to an <b>83% improvement in grasp success rate</b> on challenging fruit compared to our baselines 
+          across our three tested fruits: strawberries, blackberries and tomatoes. We rigorously evaluate this 
+          result with <b>over 630 trials</b>.</p>
       </section>
 
       <section id="method-at-a-glance">
+        <h2>Method Overview</h2>
+        <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 1rem;">
+          <img src="data/dexfruit-method-overview.png" alt="DexFruit Method Overview" 
+            style="width: 50%; max-width: 900px; border-radius: 4px; border: 1px solid #ccc;">
+        </div>
+        <p style="text-align: center; max-width: 900px; margin: 0 auto; color: #666; font-size: 0.95rem;">
+          <b>DexFruit System Overview: </b>Our framework, DexFruit, enables safe manipulation of fragile fruit using optical tactile feedback. We further present FruitSplat, a method for accurate 3D reconstruction, automated segmentation, and bruise localization in strawberries.
+        </p>
+      </section>
+
+      <!-- <section id="method-at-a-glance">
         <h2>Method at a Glance</h2>
         <div style="display: flex; justify-content: center; width: 100%; margin: 2rem 0;">
           <img src="data/Fig_main_pipeline2.png" alt="Main Method"
@@ -599,29 +579,32 @@
         </div>
         <p>Overview of the pipeline. We capture real-world pose, force of indenter and sensor images 
           and simulate gel deformation and sensor motion with Finite Element analysis simulations.</p>
-      </section>
+      </section> -->
 
-    <section id="data-collection">
-      <h2>Data Collection</h2>
-      <!-- Main display area for images/videos -->
+    <section id="tactile-policy">
+      <h2>Tactile Diffusion Policy</h2>
+      <!-- Main display area for videos -->
       <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
         <div id="main-display" style="width: 100%; max-width: 100%; height: 460px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 0.75rem; box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-          <img id="cycling-image" src="data/demo_vids/IMG_4587.jpg" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-          <video id="main-video" style="width: 100%; height: 100%; object-fit: contain; display: none;" controls></video>
+          <video id="main-video" style="width: 100%; height: 100%; object-fit: contain;" controls>
+            <source src="data/blackberry_web.mp4" type="video/mp4">
+          </video>
         </div>
         <div class="video-carousel" id="iframe-thumbnails">
-          <video data-video="0" autoplay muted loop playsinline controls src="data/demo_vids/Datacollection_1.mp4"
+          <video data-video="data/blackberry_web.mp4" autoplay muted loop playsinline controls src="data/blackberry_web.mp4"
             style="cursor:pointer;"></video>
-          <video data-video="1" autoplay muted loop playsinline controls src="data/demo_vids/Datacollection_2.mp4"
+          <video data-video="data/strawberry_web.mp4" autoplay muted loop playsinline controls src="data/strawberry_web.mp4"
+            style="cursor:pointer;"></video>
+          <video data-video="data/tomato_web.mp4" autoplay muted loop playsinline controls src="data/tomato_web.mp4"
             style="cursor:pointer;"></video>
         </div>
       </div>
-      <button id="back-to-images" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer; display: none;">Back to Image Cycling</button>
     </section>
 
-      <section id="fe-simulation">
-          <h2>Finite Element Simulation</h2>
-          <p>From the collected dataset, the 6D poses are extracted as keypoints for FE simulation with the Yeoh hyperelastic model.</p>
+      <section id="FruitSplat">
+          <h2>FruitSplat</h2>
+          <p>FruitSplat is a method for accurate 3D reconstruction, automated segmentation, and bruise localization in fruit using 3D Gaussian Splatting.</p>
+          <p>TODO: Update the videos</p>
           
           <!-- Main display area for FE simulation videos -->
           <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
@@ -638,14 +621,14 @@
           </div>
       </section>
 
-      <section id="tensor">
+      <!-- <section id="tensor">
         <h2>Construction of Deformation and Stress Tensor</h2>
         <div id="tensor-display" style="width: 100%; max-width: 100%; height: 460px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 0.75rem; box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
           <img id="tensor-cycling-image" src="data/FEsimul/stresstensor (1).png" style="max-width: 100%; max-height: 100%; object-fit: contain;">
           <video id="tensor-video" style="width: 100%; height: 100%; object-fit: contain; display: none;" controls></video>
         </div>
-        </section>
-
+        </section> -->
+<!-- 
       <section id="model">
         <h2>Tactile Model</h2>
         <p>We showed that the Hiera with the Q-upsampling decoder outperforms other baselines. Hiera is a lightweight 
@@ -653,15 +636,15 @@
         
           The specific design of the decoder and multi-scale feature fusion is critical for dense, multi-channel prediction tasks in the tactile domain. We find that our Hiera encoder and decoder architecture sets a new standard in tactile learning. </p>
         <img src="data/Fig_network.png" alt="Network Model" style="border: 1px solid #ccc;">
-      </section>
+      </section> -->
 
       <section id="results">
         <h2>Results</h2>
-        <p>From a single undeformed / deformed image of the sensor, TensorTouch estimates <b>dense</b> stress tensors, contact shear and normal force, and displacement distribution pixelwise.</p>
+        <p>TODO</p>
         <img src="data/Fig_qualitative_results_2.png" alt="Trajectory Interpolation" style="border: 1px solid #ccc;">
       </section>
 
-      <section id="Evaluation">
+      <!-- <section id="Evaluation">
         <h2>Evaluation</h2>
         <p>To demonstrate the practical utility of TensorTouch's calibrated stress tensor estimation, we propose a task manipulates two deformable objects
  with tactile-sensor attached fingertips, detecting differential motion between the objects, and maintaining selective contact with only the moving object. </p>
@@ -670,20 +653,19 @@
             style="width: 100%; max-width: 900px; border-radius: 4px; border: 1px solid #ccc;">
             <source src="data/real_vids/evaluation.mp4" type="video/mp4">
           </video>
-        </div>      </section>
+        </div>      </section> -->
       
     <section id="bibtex">
       <h2>BibTeX (To be Updated)</h2>
-      <pre><code>@article{Do2025TensorTouch,
-  title        = {TensorTouch: Calibration of Tactile Sensors for High Resolution Stress Tensor and Deformation for Dexterous Manipulation},
-  author       = {Do, Won Kyung and Strong, Matthew and Swann, Aiden and Lei, Boshu and Kennedy, Monroe III},
+              <pre><code>@article{Swann2025DexFruit,
+  title        = {DexFruit: Dexterous Manipulation of Delicate Fruits using Tactile-Visual Feedback},
+  author       = {Aiden Swann and Alex Qiu and Matthew Strong and Angelina Zhang and Samuel Morstein and Kai Rayle and Monroe Kennedy III},
   year         = {2025},
   url          = {https://arxiv.org/abs/2506.08291}
 }</code></pre>
     </section>
       <footer>
-        &copy; Webpage heavily inspired by the TensorTouch team, inspired by the <a
-          href="https://www.videomimic.net/">VideoMimic</a> website.
+        &copy; 2025 DexFruit Research Team.
       </footer>
     </div>
   </main>
