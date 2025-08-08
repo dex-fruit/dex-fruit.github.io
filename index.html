@@ -2,6 +2,17 @@
 <html lang="en">
 
 <head>
+
+    <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KY36W9S550"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KY36W9S550');
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DexFruit</title>
@@ -465,27 +476,27 @@
         <div style="text-align: center; margin-bottom: 2.5rem;">
           <a href="#" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[Paper - Coming Soon]</a>
           <a href="#" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[arXiv - Coming Soon]</a>
-          <a href="#" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[Demo Video]</a>          
+          <a href="https://www.youtube.com/watch?v=uOivql8unq0" target="_blank" rel="noopener noreferrer" style="margin-right: 1.5rem; color: #3478f6; text-decoration: none; font-weight: 600;">[Demo Video]</a>          
           <a href="#" style="color: #3478f6; text-decoration: none; font-weight: 600;">[Code - Coming Soon]</a>          
         </div>
       </section>
       <section id="abstract">
         <h1>Abstract</h1>
-        <p><b>DexFruit</b> is an optical tactile sensing informed diffusion policy for fruit manipulation. 
-          Many fruit are fragile and prone to bruising, thus requiring humans to manually harvest them with 
-          care. In this work we demonstrate by using expressive tactile sensing, automatic manipulation of 
-          fruit with minimal damage can be achieved. We show that our tactile informed diffusion policies 
-          outperforms baselines in both reduced bruising and pick-and-place success rate across three fruit: 
+        <p> DexFruit is a robotic manipulation framework that enables gentle, autonomous handling of fragile fruit 
+          and precise evaluation of damage. Many fruits are fragile and prone to bruising, thus requiring humans to 
+          manually harvest them with care. In this work, we demonstrate by using optical tactile sensing, autonomous 
+          manipulation of fruit with minimal damage can be achieved. We show that our tactile informed diffusion 
+          policies outperforms baselines in both reduced bruising and pick-and-place success rate across three fruit: 
           <b>strawberries, tomatoes, and blackberries</b>. In addition, we introduce <b>FruitSplat</b>, a novel 
-          technique to represent relevant agricultural information in high resolution 3D representation of 
-          <b>3D Gaussian Splatting (3DGS)</b>. Existing metrics for measuring damage lack quantitative rigor or 
-          require expensive equipment. With FruitSplat, we distill a 2D bruise detection segmentation model as 
-          well as 2D strawberry segmentation masking into the 3DGS representation. Furthermore, this representation 
-          is modular and general which we demonstrate by distilling mask information into the representation. 
-          Overall we demonstrate a <b>92% grasping policy success rate</b>, up to a <b>60% reduction in damage</b> 
-          and up to an <b>83% improvement in grasp success rate</b> on challenging fruit compared to our baselines 
-          across our three tested fruits: strawberries, blackberries and tomatoes. We rigorously evaluate this 
-          result with <b>over 630 trials</b>.</p>
+          technique to represent and quantify visual damage in high resolution 3D representation via <b>3D Gaussian 
+          Splatting (3DGS)</b>. Existing metrics for measuring damage lack quantitative rigor or require expensive 
+          equipment. With FruitSplat, we distill a 2D strawberry mask as well as a 2D bruise segmentation mask 
+          into the 3DGS representation. Furthermore, this representation is modular and general, which we demonstrate 
+          by distilling mask information into the representation. Overall, we demonstrate a <b>92% grasping policy success rate</b>, 
+          up to a <b>60% reduction in damage</b>, and up to an <b>31% improvement in grasp success rate</b> 
+          on challenging fruit compared to our baselines across our three tested fruits. We rigorously evaluate this 
+          result with over <b>630 trials</b>.
+        </p>
       </section>
 
       <section id="method-at-a-glance">
@@ -503,8 +514,7 @@
       
     <section id="tactile-policy">
       <h2>Tactile Diffusion Policy</h2>
-      <p>DexFruit introduces a diffusion policy trained on expert demonstrations that leverages optical tactile sensing from DenseTact sensors to enable precise, low-damage manipulation of soft fruit. The robot receives RGB images from a wrist camera and tactile images from both gripper fingers. To improve performance, the system switches from visual input to tactile input upon contact detection. The policy outputs end-effector poses and gripper widths. This approach enables safe grasping without the need for complex gripper hardware.
-
+      <p>DexFruit uses a diffusion-based imitation learning policy enhanced with optical tactile sensing to gently handle delicate fruits like strawberries, tomatoes, and blackberries. The policy intelligently switches between visual and tactile inputs, enabling precise grasping while minimizing bruising. This approach enables safe grasping without the need for complex gripper hardware.
       </p>
       <!-- Main display area for videos -->
       <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
